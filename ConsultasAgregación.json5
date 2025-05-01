@@ -1,0 +1,65 @@
+// Consultas de agregación para calcular estadísticas
+
+//Cuenta los productos con su marca
+
+db.productos.aggregate([
+  {
+    $group: {
+      _id: { nombre: "$nombre", marca: "$marca" },
+      value: { $sum: 1 }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      group: "$_id.nombre",
+      group_series_0: "$_id.marca",
+      value: 1
+    }
+  },
+  { $sort: { group: 1 } }
+])
+
+
+
+//sumar la cantidad total de productos vendidos
+
+db.ordenes.aggregate([
+  { $unwind: "$productos" },
+  {
+    $group: {
+      _id: null,
+      totalProductosVendidos: { $sum: "$productos.cantidad" }
+    }
+  }
+])
+
+// Promediar
+
+db.productos.aggregate([
+  {
+    $group: {
+      _id: null,
+      promedioPrecio: { $avg: "$precio" }
+    }
+  }
+])
+// Media y Varianza del campo precio
+db.productos.aggregate([
+  {
+    $group: {
+      _id: null,
+      media: { $avg: "$precio" },
+      varianza: {
+        $stdDevPop: "$precio"
+      }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      media: 1,
+      varianza: { $pow: ["$varianza", 2] }  
+    }
+  }
+])
