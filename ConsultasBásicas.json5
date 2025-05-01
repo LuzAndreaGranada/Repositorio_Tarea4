@@ -1,0 +1,67 @@
+//Inserción//
+
+ //Colección_Productos
+ {
+    "nombre": "Zapatos Deportivos Nike Air",
+    "descripcion": "Zapatos ligeros para correr maratones",
+    "precio": 89.99,
+    "categoría": "Calzado Deportivo",
+    "marca": "Nike",
+    "stock": 120,
+    "disponibilidad": true,
+    "imagenes": ["nike_air1.jpg", "nike_air2.jpg"],
+    "fecha_creacion": { "$date": { "$numberLong": "1714300800000" } }
+  }
+//Colección_Productos
+ { 
+	"nombre": "Ana Torres",
+	"email": "ana.torres@yahoo.com",
+	"telefono": "5551112222",
+	"direccion": "Calle 12 #45-67",
+	"ciudad": "Bogotá"
+ }
+ //Colección 
+ {
+  "cliente_id": { "$oid": "681039491b77692b11925f4f" },
+  "fecha": { "$date": "2025-04-28T12:00:00Z" },
+  "productos": [
+    {
+      "producto_id": { "$oid": "68101cb61b77692b11925f16" },
+      "nombre":"Vestido Corto Zara",
+      "categoria": "Ropa de Mujer",
+      "marca": "Zara",
+      "cantidad": 1,
+      "precio_unitario": 59.99,
+      "subtotal": 59.99
+    },
+    {
+      "producto_id": { "$oid": "68101fc81b77692b11925f21" },
+      "nombre": "Falda Plisada Bershka",
+      "categoria": "Ropa de Mujer",
+      "marca": "Bershka",
+      "cantidad": 2,
+      "precio_unitario": 40.00,
+      "subtotal": 40.00
+    }
+  ],
+  "total": 139.99,
+  "estado": "procesando"
+}
+//Selección//
+
+	{"nombre": "Pantalón Jeans Levis" } //Seleccionar un producto específico por nombre 
+	{"disponibilidad": true, "stock": { $gt: 0 } } //Seleccionar productos disponibles en stock
+	{"productos.producto_id": ObjectId("6810192a1b77692b11925f10")} //Buscar órdenes que contengan un producto específico
+	{"cliente_id": "ObjectId"("6810376f1b77692b11925f42")} //Buscar órdenes de un cliente específico 
+	
+	
+// Actualización //
+
+ db.ordenes.updateOne(
+  { _id: ObjectId("6811441c06ab8acf64ba5b9c") },
+  { $set: { "estado": "enviado" } }  //Actualización del estado de una orden
+)
+
+//eliminación de documentos
+
+db.cliente.deleteOne({ _id: ObjectId("6811410006ab8acf64ba5b92") }) //Eliminar un solo documento por _id

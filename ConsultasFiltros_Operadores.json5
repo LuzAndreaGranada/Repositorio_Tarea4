@@ -1,0 +1,60 @@
+//Consultas con filtros y operadores
+
+
+db.ordenes.find({ estado: "pendiente"}) //órdenes con estado pendiente
+
+db.ordenes.find({
+  cliente_id: ObjectId("6810376f1b77692b11925f42") //Buscar órdenes de un cliente específico por su ID
+})
+
+db.ordenes.find({
+  fecha: { $gt: ISODate("2025-04-01T00:00:00Z") } //Buscar órdenes realizadas después del 1 de abril de 2025
+})
+
+// Filtro Colección Ordenes 
+
+db.ordenes.aggregate([
+  {
+    $group: {
+      _id: { $toLower: "$estado" },
+      cantidad: { $sum: 1 }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      estado: "$_id",
+      cantidad: 1,
+      color: "$_id"
+    }
+  }
+])
+//Resultado
+[
+  { "estado": "enviado", "cantidad": 12, "color": "enviado" },
+  { "estado": "entregado", "cantidad": 11, "color": "entregado" },
+  { "estado": "pendiente", "cantidad": 5, "color": "pendiente" },
+  { "estado": "cancelado", "cantidad": 3, "color": "cancelado" },
+  { "estado": "completado", "cantidad": 2, "color": "completado" }
+]
+
+// Filtro de Clientes por Ciudad
+
+db.clientes.aggregate([
+  {
+    $group: {
+      _id: "$ciudad",
+      value: { $sum: 1 }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      label: "$_id",
+      value: 1
+    }
+  },
+  {
+    $sort: { label: 1 }
+  }
+])
