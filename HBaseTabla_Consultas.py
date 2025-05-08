@@ -2,11 +2,11 @@ import happybase
 import pandas as pd
 
 try:
-    # 1. Conectar con HBase
+    # Conectar con HBase
     connection = happybase.Connection('localhost')
     print("Conexión con HBase establecida.")
 
-    # 2. Crear tabla y familias de columnas
+    # Crear tabla y familias de columnas
     table_name = 'tienda_virtual_armenia'
     families = {
         'entidad': dict(),
@@ -23,19 +23,19 @@ try:
     table = connection.table(table_name)
     print(f"Tabla '{table_name}' creada correctamente.")
 
-    # 3. Leer dataset desde la URL
+    # Leer dataset desde la URL
     url = "https://www.datos.gov.co/resource/qc6t-5eda.csv"
     df = pd.read_csv(url)
 
-    # 4. Normalizar nombres de columnas
+    # Normalizar nombres de columnas
     df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
     print("Columnas detectadas:", df.columns.tolist())
 
-    # 5. Validar que 'total' esté presente
+    # Validar que 'total' esté presente
     if 'total' not in df.columns:
         raise ValueError("La columna 'total' no se encontró en el dataset.")
 
-    # 6. Limpieza de datos
+    # Limpieza de datos
     df['total'] = pd.to_numeric(df['total'], errors='coerce').fillna(0)
 
     for col in df.select_dtypes(include='number').columns:
@@ -44,7 +44,7 @@ try:
     for col in df.select_dtypes(include='object').columns:
         df[col] = df[col].fillna('')
 
-    # 7. Cargar en HBase
+    # Cargar en HBase
     for idx, row in df.iterrows():
         row_key = f"orden_{idx}".encode()
         data = {
@@ -72,7 +72,7 @@ try:
 
     print("Datos cargados exitosamente en HBase.")
 
-    # 8. Consultar las primeras 5 órdenes
+    # Consultar las primeras 5 órdenes
     print("\n=== Primeras 5 órdenes ===")
     count = 0
     for key, data in table.scan():
